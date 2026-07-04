@@ -737,66 +737,55 @@ export default function ModuleModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl"
       onClick={() => setLightboxPhoto(null)}
     >
+      {/* 暗角氛圍層 */}
+      <div className="absolute inset-0 bg-gradient-radial from-black/30 via-black/80 to-black" />
+
       {/* 關閉按鈕 */}
       <button
         onClick={() => setLightboxPhoto(null)}
-        className="absolute top-6 right-6 z-50 text-white bg-black/40 rounded-full w-10 h-10"
+        className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-black/50 border border-white/10 text-white hover:bg-white/10 transition"
       >
         ✕
       </button>
 
-      {/* 圖片本體 */}
-      <motion.img
-        src={lightboxPhoto.url}
-        alt={lightboxPhoto.title}
-        className="max-h-[80vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.9 }}
-      />
+      {/* 主內容 */}
+      <motion.div
+        initial={{ scale: 0.92, y: 20, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        exit={{ scale: 0.92, y: 20, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 120, damping: 18 }}
+        className="relative flex flex-col items-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 圖片 */}
+        <motion.img
+          key={lightboxPhoto.id}
+          src={lightboxPhoto.url}
+          alt={lightboxPhoto.title}
+          className="max-h-[75vh] max-w-[92vw] object-contain rounded-xl shadow-2xl border border-white/10"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+        />
+
+        {/* 資訊卡 */}
+        <div className="mt-4 w-full max-w-2xl bg-black/60 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3 text-center">
+          <h3 className="text-white font-serif text-sm md:text-base font-semibold">
+            {lightboxPhoto.title}
+          </h3>
+
+          <p className="text-xs text-gray-400 mt-1">
+            投稿者：{lightboxPhoto.contributor} ｜ {lightboxPhoto.year} · {lightboxPhoto.category}
+          </p>
+
+          <p className="text-[10px] text-gray-500 font-mono mt-1">
+            {new Date(lightboxPhoto.createdAt).toLocaleString()}
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   )}
 </AnimatePresence>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/95 backdrop-blur-sm"
-          >
-            <button
-              onClick={() => setLightboxPhoto(null)}
-              className="absolute top-6 right-6 bg-black/60 hover:bg-black p-2 rounded-full border border-white/10 text-white z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="max-w-3xl w-full flex flex-col items-center justify-center space-y-4">
-              <div className="relative max-h-[75vh] max-w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 flex items-center justify-center">
-                <img
-                  src={lightboxPhoto.url}
-                  alt={lightboxPhoto.title}
-                  className="max-h-[70vh] max-w-full object-contain"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-4 left-4 bg-black/70 border border-white/10 text-xs px-3 py-1 rounded-full text-[#FFCCDD]">
-                  {lightboxPhoto.year} • {lightboxPhoto.category}
-                </div>
-              </div>
-
-              <div className="text-center">
-                <h4 className="font-serif text-lg font-bold text-white tracking-wide">{lightboxPhoto.title}</h4>
-                <p className="text-xs text-gray-400 mt-1">投稿人 Contributor: {lightboxPhoto.contributor}</p>
-                <p className="text-[10px] text-gray-500 font-mono mt-0.5">
-                  上傳時間: {new Date(lightboxPhoto.createdAt).toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
