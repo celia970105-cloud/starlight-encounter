@@ -730,20 +730,34 @@ export default function ModuleModal({
         </div>
       </motion.div>
 
-{/* Lightbox for Photos */}
+{/* Lightbox v3 */}
 <AnimatePresence>
-  {lightboxPhoto && (
+  {lightboxPhoto && lightboxIndex !== null && (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl"
       onClick={() => setLightboxPhoto(null)}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') setLightboxPhoto(null);
+        if (e.key === 'ArrowRight') {
+          const next = Math.min(lightboxIndex + 1, filteredPhotos.length - 1);
+          setLightboxIndex(next);
+          setLightboxPhoto(filteredPhotos[next]);
+        }
+        if (e.key === 'ArrowLeft') {
+          const prev = Math.max(lightboxIndex - 1, 0);
+          setLightboxIndex(prev);
+          setLightboxPhoto(filteredPhotos[prev]);
+        }
+      }}
+      tabIndex={0}
     >
-      {/* 暗角氛圍層 */}
+      {/* 背景氛圍 */}
       <div className="absolute inset-0 bg-gradient-radial from-black/30 via-black/80 to-black" />
 
-      {/* 關閉按鈕 */}
+      {/* 關閉 */}
       <button
         onClick={() => setLightboxPhoto(null)}
         className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-black/50 border border-white/10 text-white hover:bg-white/10 transition"
@@ -751,38 +765,62 @@ export default function ModuleModal({
         ✕
       </button>
 
+      {/* 左右切換按鈕 */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          const prev = Math.max(lightboxIndex - 1, 0);
+          setLightboxIndex(prev);
+          setLightboxPhoto(filteredPhotos[prev]);
+        }}
+        className="absolute left-6 text-white text-2xl bg-black/40 w-10 h-10 rounded-full hover:bg-white/10"
+      >
+        ‹
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          const next = Math.min(lightboxIndex + 1, filteredPhotos.length - 1);
+          setLightboxIndex(next);
+          setLightboxPhoto(filteredPhotos[next]);
+        }}
+        className="absolute right-20 text-white text-2xl bg-black/40 w-10 h-10 rounded-full hover:bg-white/10"
+      >
+        ›
+      </button>
+
       {/* 主內容 */}
       <motion.div
-        initial={{ scale: 0.92, y: 20, opacity: 0 }}
-        animate={{ scale: 1, y: 0, opacity: 1 }}
-        exit={{ scale: 0.92, y: 20, opacity: 0 }}
+        key={lightboxPhoto.id}
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.92, opacity: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 18 }}
         className="relative flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 圖片 */}
         <motion.img
-          key={lightboxPhoto.id}
           src={lightboxPhoto.url}
           alt={lightboxPhoto.title}
           className="max-h-[75vh] max-w-[92vw] object-contain rounded-xl shadow-2xl border border-white/10"
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
         />
 
-        {/* 資訊卡 */}
+        {/* 底部資訊 */}
         <div className="mt-4 w-full max-w-2xl bg-black/60 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3 text-center">
           <h3 className="text-white font-serif text-sm md:text-base font-semibold">
             {lightboxPhoto.title}
           </h3>
 
           <p className="text-xs text-gray-400 mt-1">
-            投稿者：{lightboxPhoto.contributor} ｜ {lightboxPhoto.year} · {lightboxPhoto.category}
+            {lightboxPhoto.contributor} ｜ {lightboxPhoto.year} · {lightboxPhoto.category}
           </p>
 
           <p className="text-[10px] text-gray-500 font-mono mt-1">
-            {new Date(lightboxPhoto.createdAt).toLocaleString()}
+            {lightboxIndex + 1} / {filteredPhotos.length}
           </p>
         </div>
       </motion.div>
