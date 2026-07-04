@@ -730,9 +730,36 @@ export default function ModuleModal({
         </div>
       </motion.div>
 
-      {/* Lightbox for Photos */}
-      <AnimatePresence>
-        {lightboxPhoto && (
+{/* Lightbox for Photos */}
+<AnimatePresence>
+  {lightboxPhoto && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
+      onClick={() => setLightboxPhoto(null)}
+    >
+      {/* 關閉按鈕 */}
+      <button
+        onClick={() => setLightboxPhoto(null)}
+        className="absolute top-6 right-6 z-50 text-white bg-black/40 rounded-full w-10 h-10"
+      >
+        ✕
+      </button>
+
+      {/* 圖片本體 */}
+      <motion.img
+        src={lightboxPhoto.url}
+        alt={lightboxPhoto.title}
+        className="max-h-[80vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
