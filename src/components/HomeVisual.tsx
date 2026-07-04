@@ -57,7 +57,7 @@ export default function HomeVisual({
     },
     {
       id: 'artwork',
-      label: '美術',
+      label: '作品',
       subLabel: 'Museum',
       icon: Palette,
       x: '82%',
