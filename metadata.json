@@ -1,0 +1,6 @@
+{
+  "name": "All for Jiyu",
+  "description": "A premium, elegant, and dreamy celebrity fan support platform with starry sky navigation, Cupid animations, fan submissions, and an administrative control panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
